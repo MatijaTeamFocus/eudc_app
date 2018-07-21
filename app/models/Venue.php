@@ -38,7 +38,6 @@ class Venue extends \Phalcon\Mvc\Model
         $this->setSource("venue");
         $this->hasMany('id', 'Models\Event', 'venue_id', ['alias' => 'Event']);
         $this->hasMany('id', 'Models\Room', 'venue_id', ['alias' => 'Room']);
-        $this->hasMany('id', 'Models\Round', 'venue_id', ['alias' => 'Round']);
     }
 
     /**

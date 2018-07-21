@@ -42,6 +42,7 @@ class Room extends \Phalcon\Mvc\Model
     {
         $this->setSchema("debate");
         $this->setSource("room");
+        $this->hasMany('id', 'Models\Event', 'room_id', ['alias' => 'Event']);
         $this->belongsTo('venue_id', 'Models\Venue', 'id', ['alias' => 'Venue']);
     }
 

@@ -33,7 +33,7 @@ class Round extends \Phalcon\Mvc\Model
      *
      * @var integer
      */
-    public $venue_id;
+    public $event_id;
 
     /**
      * Initialize method for model.
@@ -42,7 +42,7 @@ class Round extends \Phalcon\Mvc\Model
     {
         $this->setSchema("debate");
         $this->setSource("round");
-        $this->belongsTo('venue_id', 'Models\Venue', 'id', ['alias' => 'Venue']);
+        $this->belongsTo('event_id', 'Models\Event', 'id', ['alias' => 'Event']);
     }
 
     /**

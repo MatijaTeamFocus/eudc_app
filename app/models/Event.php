@@ -48,14 +48,22 @@ class Event extends \Phalcon\Mvc\Model
     public $venue_id;
 
     /**
+     *
+     * @var integer
+     */
+    public $room_id;
+
+    /**
      * Initialize method for model.
      */
     public function initialize()
     {
         $this->setSchema("debate");
         $this->setSource("event");
+        $this->hasMany('id', 'Models\Round', 'event_id', ['alias' => 'Round']);
         $this->belongsTo('tournament_id', 'Models\Tournament', 'id', ['alias' => 'Tournament']);
         $this->belongsTo('venue_id', 'Models\Venue', 'id', ['alias' => 'Venue']);
+        $this->belongsTo('room_id', 'Models\Room', 'id', ['alias' => 'Room']);
     }
 
     /**

@@ -4,10 +4,23 @@ namespace Controllers;
 
 use Models\Event;
 use Models\Venue;
+use Models\Room;
+use Models\Round;
 use Exceptions\RestParameterException;
 
 class EventController extends ControllerBase
 {
+
+    /*
+     *  1   -   Registration    -   Room
+     *  2   -   Round           -   Room
+     *  3   -   Socials
+     *  4   -   Workshop        -   Room
+     *  5   -   Meal            -   Room
+     *  6   -   Transport
+     *  7   -   Briefing        -   Room
+     *  8   -   Misc(Council, Pre Council, Caucus, All day departures) - Room
+     * */
 
     public function getEventById()
     {
@@ -25,9 +38,12 @@ class EventController extends ControllerBase
             );
 
             if ($event) {
-                $result = [];
                 $result["event"] = $event;
+                if($event->type == 2){
+                    $result["round"] = ($event->Round)[0];
+                }
                 $result["venue"] = $event->Venue;
+                $result["room"] = $this->eventRoom($event);
 
                 $response->setStatusCode(200, "OK");
                 $response->setJsonContent($result);
@@ -57,27 +73,22 @@ class EventController extends ControllerBase
                         "date" => $current_time
                     ],
                     "order" => "date_start ASC",
-                    "limit" => 2
+                    "limit" => 3
                 ]
             );
-
 
             if (sizeof($events) > 0) {
                 $results = [];
 
-                if(sizeof($events) == 2) {
-                    $results[0]["event"] = $events[0];
-                    $results[0]["venue"] = $events[0]->Venue;
+                foreach ($events as $event){
+                    $result["event"] = $event;
+                    if($event->type == 2){
+                        $result["round"] = ($event->Round)[0];
+                    }
+                    $result["venue"] = $event->Venue;
+                    $result["room"] = $this->eventRoom($event);
 
-
-                    $results[1]["event"] = $events[1];
-                    $results[1]["venue"] = $events[1]->Venue;
-
-//                    $result["venues"] = [$events[0]->Venue, $events[1]->Venue];
-                }else if(sizeof($events) == 1){
-                    $events[0]->venue = $events[0]->Venue;
-
-//                    $result["venues"] = [$events[0]->Venue];
+                    array_push($results,$result);
                 }
 
                 $response->setStatusCode(200, "OK");
@@ -110,12 +121,16 @@ class EventController extends ControllerBase
 
             if (sizeof($events) > 0) {
                 $results = [];
-                $i = 0;
 
                 foreach ($events as $e){
-                    $results[$i]["event"] = $e;
-                    $results[$i]["venue"] = $e->Venue;
-                    $i++;
+                    $result["event"] = $e;
+                    if($e->type == 2){
+                        $result["round"] = ($e->Round)[0];
+                    }
+                    $result["venue"] = $e->Venue;
+                    $result["room"] = $this->eventRoom($e);
+
+                    array_push($results,$result);
                 }
 
                 $response->setStatusCode(200, "OK");
@@ -128,6 +143,50 @@ class EventController extends ControllerBase
             $response = $this->getExceptionResponse($e);
         } finally {
             return $response;
+        }
+    }
+
+    //PRIVATE FUNCTIONS
+    private function eventRoom($event){
+        switch ($event->type){
+            case 1:
+                if($event->room_id){
+                    return $event->Room;
+                }else{
+                    return "";
+                }
+            case 2:
+                if($event->room_id){
+                    return $event->Room;
+                }else{
+                    return "";
+                }
+            case 4:
+                if($event->room_id){
+                    return $event->Room;
+                }else{
+                    return "";
+                }
+            case 5:
+                if($event->room_id){
+                    return $event->Room;
+                }else{
+                    return "";
+                }
+            case 7:
+                if($event->room_id){
+                    return $event->Room;
+                }else{
+                    return "";
+                }
+            case 8:
+                if($event->room_id){
+                    return $event->Room;
+                }else{
+                    return "";
+                }
+            default:
+                return "";
         }
     }
 
